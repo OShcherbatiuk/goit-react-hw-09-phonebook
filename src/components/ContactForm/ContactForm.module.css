@@ -1,0 +1,40 @@
+.form {
+  border: 1px solid black;
+  padding: 15px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+.label {
+  font-size: 22px;
+}
+.input {
+  display: block;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 90%;
+  height: 30px;
+  @media screen and (min-width: 1024px) {
+    width: 250px;
+  }
+}
+
+.btn {
+  cursor: pointer;
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  padding: 0.5em 2em;
+  outline: none;
+  border-width: 2px 0;
+  border-style: solid none;
+  border-color: #fdbe33 #000 #d77206;
+  border-radius: 6px;
+  background: linear-gradient(#f3ae0f, #e38916) #e38916;
+  transition: 0.2s;
+}
+.btn:hover {
+  background: linear-gradient(#f5ae00, #f59500) #f5ae00;
+}
+.btn:active {
+  background: linear-gradient(#f59500, #f5ae00) #f59500;
+}

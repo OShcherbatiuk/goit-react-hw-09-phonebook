@@ -1,0 +1,32 @@
+.menu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-right: 10px;
+}
+
+.avatar {
+  margin-right: 8px;
+}
+
+.text {
+  margin: 0 10px 0 0;
+  font-size: 17px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.button {
+  background-color: rgb(86, 86, 214);
+  color: #fff;
+  border: transparent;
+  width: 73px;
+  height: 25px;
+  border-radius: 20%;
+  transition: all 150ms linear;
+}
+
+.button:hover {
+  background-color: rgb(253, 59, 59);
+  transition: all 150ms linear;
+}
