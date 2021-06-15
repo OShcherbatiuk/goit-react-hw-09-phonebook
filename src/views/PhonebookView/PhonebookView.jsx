@@ -1,5 +1,5 @@
-import { Component } from 'react';
-import { connect } from 'react-redux';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Container from '../../components/Container';
 import Section from '../../components/Section';
 import ContactForm from '../../components/ContactForm';
@@ -8,33 +8,55 @@ import Filter from '../../components/Filter';
 import contactOperations from '../../redux/phonebook/phonebook-operations';
 import { getIsLoading } from '../../redux/phonebook/phonebook-selectors';
 
-class App extends Component {
-  componentDidMount() {
-    this.props.fetchContact();
-  }
+export default function PhonebookView() {
+  const dispatch = useDispatch();
+  const isLoading = useSelector(getIsLoading);
 
-  render() {
-    return (
-      <Container>
-        <Section title={'Phonebook'}>
-          <ContactForm />
-        </Section>
-        <Section title={'Contacts'}>
-          {this.props.isLoading && <p>Loading...</p>}
-          <Filter />
-          <ContactList />
-        </Section>
-      </Container>
-    );
-  }
+  useEffect(() => {
+    dispatch(contactOperations.fetchContact());
+  }, [dispatch]);
+
+  return (
+    <Container>
+      <Section title={'Phonebook'}>
+        <ContactForm />
+      </Section>
+      <Section title={'Contacts'}>
+        {isLoading && <p>Loading...</p>}
+        <Filter />
+        <ContactList />
+      </Section>
+    </Container>
+  );
 }
 
-const mapStateToProps = state => ({
-  isLoading: getIsLoading(state),
-});
+// class App extends Component {
+//   componentDidMount() {
+//     this.props.fetchContact();
+//   }
 
-const mapDispatchToProps = dispatch => ({
-  fetchContact: () => dispatch(contactOperations.fetchContact()),
-});
+//   render() {
+//     return (
+//       <Container>
+//         <Section title={'Phonebook'}>
+//           <ContactForm />
+//         </Section>
+//         <Section title={'Contacts'}>
+//           {this.props.isLoading && <p>Loading...</p>}
+//           <Filter />
+//           <ContactList />
+//         </Section>
+//       </Container>
+//     );
+//   }
+// }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+// const mapStateToProps = state => ({
+//   isLoading: getIsLoading(state),
+// });
+
+// const mapDispatchToProps = dispatch => ({
+//   fetchContact: () => dispatch(contactOperations.fetchContact()),
+// });
+
+// export default connect(mapStateToProps, mapDispatchToProps)(App);
