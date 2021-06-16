@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import shortid from 'shortid';
 import { phonebookOperations } from '../../redux/phonebook';
@@ -7,42 +7,27 @@ import { getAllContacts } from '../../redux/phonebook/phonebook-selectors';
 import s from './ContactForm.module.css';
 
 export default function ContactForm() {
-  const dispatch = useDispatch();
   const nameInputId = shortid.generate();
   const numberInputId = shortid.generate();
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const dispatch = useDispatch();
+  const [user, setUser] = useState({ name: '', number: '' });
   const contacts = useSelector(getAllContacts);
-  const onSubmit = data => dispatch(phonebookOperations.addContact(data));
 
-  const handleChange = ({ target }) => {
-    const { name, value } = target;
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
-      case 'number':
-        setNumber(value);
-        break;
-      default:
-        console.log('ошибка типа поля');
-    }
+  const handleChange = ({ target: { name, value } }) => {
+    setUser(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = event => {
-    event.preventDefault();
-    const isNoUnique = contacts.find(contact => contact.name === name);
-    isNoUnique
-      ? alert(`${name} is alredy in contacts`)
-      : onSubmit({ name, number });
+  const handleSubmit = useCallback(
+    event => {
+      event.preventDefault();
+      const isNoUnique = contacts.find(contact => contact.name === user.name);
+      const onSubmit = data => dispatch(phonebookOperations.addContact(data));
+      isNoUnique ? alert(`${user.name} is alredy in contacts`) : onSubmit(user);
+      setUser({ name: '', number: '' });
+    },
+    [contacts, user, dispatch],
+  );
 
-    resetInput();
-  };
-
-  const resetInput = () => {
-    setName('');
-    setNumber('');
-  };
   return (
     <div>
       <form className={s.form} onSubmit={handleSubmit}>
@@ -53,7 +38,7 @@ export default function ContactForm() {
             type="text"
             name="name"
             id={nameInputId}
-            value={name}
+            value={user.name}
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
             required
@@ -67,7 +52,7 @@ export default function ContactForm() {
             type="tel"
             name="number"
             id={numberInputId}
-            value={number}
+            value={user.number}
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
             required
