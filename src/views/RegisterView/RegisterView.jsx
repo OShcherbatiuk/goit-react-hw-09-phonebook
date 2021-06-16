@@ -1,42 +1,31 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { authOperations } from '../../redux/auth';
 import s from './RegisterView.module.css';
 
 export default function RegisterView() {
+  const [newUser, setNewUser] = useState({
+    name: '',
+    email: '',
+    password: '',
+  });
+
+  const handleChange = useCallback(({ target: { name, value } }) => {
+    setNewUser(prev => ({ ...prev, [name]: value }));
+  }, []);
+
   const dispatch = useDispatch();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
-  const handleChange = ({ target }) => {
-    const { name, value } = target;
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
-      case 'email':
-        setEmail(value);
-        break;
-      case 'password':
-        setPassword(value);
-        break;
-      default:
-        console.log('ошибка типа поля');
-    }
-  };
+  const handleSubmit = useCallback(
+    e => {
+      e.preventDefault();
 
-  const handleSubmit = event => {
-    event.preventDefault();
-    dispatch(authOperations.register({ name, email, password }));
-    resetInput();
-  };
+      dispatch(authOperations.register(newUser));
+      setNewUser({ name: '', email: '', password: '' });
+    },
+    [newUser, dispatch],
+  );
 
-  const resetInput = () => {
-    setName('');
-    setEmail('');
-    setPassword('');
-  };
   return (
     <div className={s.section}>
       <form onSubmit={handleSubmit} className={s.form} autoComplete="off">
@@ -46,7 +35,7 @@ export default function RegisterView() {
             className={s.input}
             type="text"
             name="name"
-            value={name}
+            value={newUser.name}
             onChange={handleChange}
           />
         </label>
@@ -57,7 +46,7 @@ export default function RegisterView() {
             className={s.input}
             type="email"
             name="email"
-            value={email}
+            value={newUser.email}
             onChange={handleChange}
           />
         </label>
@@ -68,7 +57,7 @@ export default function RegisterView() {
             className={s.input}
             type="password"
             name="password"
-            value={password}
+            value={newUser.password}
             onChange={handleChange}
           />
         </label>

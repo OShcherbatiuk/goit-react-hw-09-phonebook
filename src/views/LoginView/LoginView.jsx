@@ -5,32 +5,21 @@ import s from './LoginView.module.css';
 
 export default function LoginView() {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [userLogin, setUserLogin] = useState({
+    email: '',
+    password: '',
+  });
 
-  const handleChange = ({ target }) => {
-    const { name, value } = target;
-    switch (name) {
-      case 'email':
-        setEmail(value);
-        break;
-      case 'password':
-        setPassword(value);
-        break;
-      default:
-        console.log('ошибка типа поля');
-    }
+  const handleChange = ({ target: { name, value } }) => {
+    setUserLogin(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = event => {
-    event.preventDefault();
-    dispatch(authOperations.logIn({ email, password }));
-    resetInput();
-  };
+  const handleSubmit = e => {
+    e.preventDefault();
 
-  const resetInput = () => {
-    setEmail('');
-    setPassword('');
+    dispatch(authOperations.logIn(userLogin));
+
+    setUserLogin({ email: '', password: '' });
   };
 
   return (
@@ -42,7 +31,7 @@ export default function LoginView() {
             className={s.input}
             type="email"
             name="email"
-            value={email}
+            value={userLogin.email}
             onChange={handleChange}
           />
         </label>
@@ -53,7 +42,7 @@ export default function LoginView() {
             className={s.input}
             type="password"
             name="password"
-            value={password}
+            value={userLogin.password}
             onChange={handleChange}
           />
         </label>
